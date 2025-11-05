@@ -1,0 +1,210 @@
+# tests/bdd/features/email_classification.feature
+Feature: Email Classification
+  As a cybersecurity analyst
+  I want to classify emails as spam or ham
+  So that I can protect users from malicious content
+
+  Background:
+    Given the spam classifier system is initialized
+    And a trained classification model is available
+
+  Scenario: Classify obvious spam email
+    Given an email with subject "GET RICH QUICK!!!"
+    And the email body contains "Click here to win $1,000,000"
+    When I classify the email
+    Then the email should be classified as "spam"
+    And the confidence score should be greater than 0.8
+
+  Scenario: Classify legitimate email
+    Given an email with subject "Meeting reminder"
+    And the email body contains "Our team meeting is scheduled for tomorrow at 10 AM"
+    When I classify the email
+    Then the email should be classified as "ham"
+    And the confidence score should be greater than 0.7
+
+  Scenario: Handle emails with mixed signals
+    Given an email with subject "Account verification required"
+    And the email body contains some spam indicators
+    And the email body contains some legitimate content
+    When I classify the email
+    Then the email should be classified
+    And the confidence score should be recorded
+    And the classification result should include probability scores
+
+  Scenario: Batch classification of multiple emails
+    Given a list of 10 emails to classify
+    When I classify all emails in batch
+    Then all 10 emails should be classified
+    And each email should have a label and confidence score
+    And the batch processing time should be recorded
+
+  Scenario: Classification with insufficient confidence
+    Given an email that is ambiguous
+    When I classify the email with confidence threshold 0.8
+    And the model confidence is below the threshold
+    Then the system should flag the email for manual review
+    And the user should be notified about low confidence
+
+  Scenario Outline: Classify emails with various spam indicators
+    Given an email with <spam_indicator>
+    When I classify the email
+    Then the email should be classified as "spam"
+    And the confidence should be at least <min_confidence>
+
+    Examples:
+      | spam_indicator              | min_confidence |
+      | excessive exclamation marks | 0.75          |
+      | suspicious links            | 0.85          |
+      | urgent action required      | 0.70          |
+      | misspelled words            | 0.65          |
+      | all caps subject            | 0.80          |
+
+
+# tests/bdd/features/model_training.feature
+Feature: Model Training and Evaluation
+  As a data scientist
+  I want to train and evaluate spam classification models
+  So that I can improve detection accuracy
+
+  Background:
+    Given the training dataset from "Chapter03/datasets" is loaded
+    And the dataset is split into train, validation, and test sets
+
+  Scenario: Train a Naive Bayes classifier
+    Given I select "Naive Bayes" as the model type
+    When I train the model on the training dataset
+    Then the model should be trained successfully
+    And the training metrics should be recorded
+    And the model accuracy should be above 0.85
+
+  Scenario: Evaluate model performance
+    Given a trained model is available
+    When I evaluate the model on the test dataset
+    Then I should receive performance metrics
+    And the metrics should include accuracy, precision, recall, and F1-score
+    And a confusion matrix should be generated
+
+  Scenario: Cross-validation for model robustness
+    Given a dataset with 5-fold configuration
+    When I perform cross-validation
+    Then I should receive metrics for each fold
+    And the average cross-validation score should be calculated
+    And the standard deviation should indicate model stability
+
+  Scenario: Compare multiple model types
+    Given I have trained models of types: Naive Bayes, Logistic Regression, Random Forest
+    When I compare their performance metrics
+    Then I should see a comparison table
+    And the best performing model should be identified
+    And the comparison should include training time
+
+  Scenario: Detect model overfitting
+    Given a trained model
+    When training accuracy is significantly higher than validation accuracy
+    Then the system should flag potential overfitting
+    And suggest regularization techniques
+
+  Scenario: Feature importance analysis
+    Given a trained Random Forest model
+    When I analyze feature importance
+    Then I should see a ranked list of features
+    And the visualization should show top 10 features
+    And the cumulative importance should be displayed
+
+
+# tests/bdd/features/data_preparation.feature
+Feature: Data Preparation and Preprocessing
+  As a machine learning engineer
+  I want to prepare and preprocess email data
+  So that models can learn effectively
+
+  Scenario: Load raw email dataset
+    Given the raw dataset path "Chapter03/datasets/emails.csv"
+    When I load the dataset
+    Then the dataset should contain email records
+    And each record should have required fields
+    And missing values should be identified
+
+  Scenario: Clean email text
+    Given an email with HTML tags and special characters
+    When I apply text cleaning
+    Then HTML tags should be removed
+    And special characters should be handled appropriately
+    And the text should be normalized
+
+  Scenario: Tokenize email content
+    Given a cleaned email text
+    When I tokenize the content
+    Then the text should be split into tokens
+    And stop words should be removed
+    And tokens should be lemmatized
+
+  Scenario: Extract text features
+    Given a preprocessed email
+    When I extract features
+    Then TF-IDF features should be calculated
+    And word count statistics should be included
+    And special character ratios should be computed
+
+  Scenario: Balance dataset classes
+    Given an imbalanced dataset with 70% spam and 30% ham
+    When I apply class balancing
+    Then the balanced dataset should have equal class distribution
+    And the balancing method should be recorded
+
+  Scenario: Create feature matrix
+    Given a list of preprocessed emails
+    When I create the feature matrix
+    Then the matrix should have shape (n_samples, n_features)
+    And feature names should be preserved
+    And the matrix should be ready for model training
+
+
+# tests/bdd/features/visualization.feature
+Feature: Performance Visualization
+  As a stakeholder
+  I want to visualize model performance
+  So that I can understand classification effectiveness
+
+  Scenario: Display confusion matrix
+    Given model predictions on test data
+    When I generate a confusion matrix visualization
+    Then the matrix should show true positives, false positives, true negatives, and false negatives
+    And the visualization should use a heatmap format
+    And percentages should be displayed in each cell
+
+  Scenario: Plot ROC curve
+    Given model probability predictions
+    When I plot the ROC curve
+    Then the curve should show true positive rate vs false positive rate
+    And the AUC score should be displayed
+    And the random classifier baseline should be shown
+
+  Scenario: Visualize precision-recall curve
+    Given model predictions with probabilities
+    When I generate the precision-recall curve
+    Then the curve should balance precision and recall
+    And the optimal threshold point should be highlighted
+    And the average precision score should be shown
+
+  Scenario: Show feature importance
+    Given a trained model with feature importances
+    When I create a feature importance chart
+    Then the top 20 features should be displayed
+    And features should be sorted by importance
+    And the chart should be interactive
+
+  Scenario: Display learning curves
+    Given training history data
+    When I plot learning curves
+    Then training and validation metrics should be shown
+    And the curves should indicate overfitting or underfitting
+    And the number of training samples should be on x-axis
+
+  Scenario: Interactive dashboard
+    Given model metrics and visualizations
+    When I open the Streamlit dashboard
+    Then I should see real-time classification results
+    And I should be able to upload new emails
+    And the dashboard should show performance metrics
+    And visualizations should update dynamically

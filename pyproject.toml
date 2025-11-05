@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "spam-email-classifier"
+version = "1.0.0"
+description = "AIIS Homework 3 Spam Email Classifier with AI/ML"
+requires-python = ">=3.9"
+
+[tool.black]
+line-length = 100
+target-version = ['py39']
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-v --cov=spam_classifier --cov-report=html"
