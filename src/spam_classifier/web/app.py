@@ -194,7 +194,7 @@ def load_dataset(path: str) -> pd.DataFrame:
 def discover_datasets(base_dirs: List[str] = None) -> List[str]:
     """Discover all CSV datasets"""
     if base_dirs is None:
-        base_dirs = ["datasets", "datasets/processed", "data/raw", "data/processed"]
+        base_dirs = ["datasets", "datasets/processed", "data/", "data/processed"]
     
     datasets = []
     for base_dir in base_dirs:
